@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Put, Req, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { tokenDto, userEditDto } from 'src/dto/user.dto';
@@ -20,7 +20,12 @@ export class UserController {
     res.send();
   }
   @Post('/edit')
-  async profileEdit(@Body() data: userEditDto ,@Req() req : Request) {
+  async profileEdit(@Body() data: userEditDto, @Req() req: Request) {
     this.userService.userEdit(data, req.cookies['access_token']);
+  }
+  @Put('/logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('access_token');
+    res.send('fuck');
   }
 }
