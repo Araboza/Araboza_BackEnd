@@ -1,9 +1,8 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { tokenDto } from 'src/dto/user.dto';
+import { Response, Request } from 'express';
+import { tokenDto, userEditDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
-
 @Controller('user')
 export class UserController {
   constructor(
@@ -19,5 +18,9 @@ export class UserController {
 
     res.cookie('access_token', this.jwtService.sign({ sub: user.sub }));
     res.send();
+  }
+  @Post('/edit')
+  async profileEdit(@Body() data: userEditDto ,@Req() req : Request) {
+    this.userService.userEdit(data, req.cookies['access_token']);
   }
 }

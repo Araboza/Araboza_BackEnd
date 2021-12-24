@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UserDto {
   name: string;
@@ -19,8 +19,13 @@ export class User2 {
 export class tokenDto {
   @IsString()
   readonly TokenId: string;
+}
+
+export class userEditDto {
+  @IsOptional()
   @IsString({ each: true })
-  readonly major: string[];
+  major: string[];
+  @IsOptional()
   @IsString()
-  readonly introduce: string;
+  introduce: string;
 }

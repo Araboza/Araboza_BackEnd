@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { userEditDto } from 'src/dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -27,9 +28,7 @@ export class UserService {
         sub: UserAll.sub,
         email: UserAll.email,
         name: UserAll.name,
-        picture: UserAll.picture,
-        major: User.major,
-        introduce: User.introduce,
+        picture: UserAll.picture
       });
     } else {
       await this.user.save(
@@ -37,12 +36,19 @@ export class UserService {
           sub: UserAll.sub,
           email: UserAll.email,
           name: UserAll.name,
-          picture: UserAll.picture,
-          major: User.major,
-          introduce: User.introduce,
+          picture: UserAll.picture
         }),
       );
     }
     return UserAll.sub;
+  }
+
+  async userEdit(data: userEditDto, cookie: string) {
+    console.log(data);
+    const Token = await this.jwtService.decode(cookie);
+    //console.log(Token.sub)
+    this.user.update(Token.sub,{
+      ...data,
+    })
   }
 }
