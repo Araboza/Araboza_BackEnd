@@ -1,17 +1,22 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { UserDto } from 'src/dto/user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { access } from 'fs';
+import { tokenDto, UserDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+    private jwtService: JwtService) {}
   @Post('/login')
-  GetToken(
-    @Body() User: { TokenId: string; major: string[]; introduce: string },
-  ) {
+  async GetToken(@Body() User: tokenDto) {
     console.log('hi', User);
-    this.userService.pushData(User);
-
-    return 'hi';
+    const sub:string = await this.userService.pushData(User);
+    //console.log(sub)
+    const user = await this.userService.getUser(sub);
+    console.log(user);
+    return {
+      access_token: this.jwtService.sign({ 'sub' : user.sub})
+    };
   }
 }
