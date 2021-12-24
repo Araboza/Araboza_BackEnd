@@ -13,7 +13,4 @@ export class AppService {
     });
   }
   Decode(): any {}
-  getData(): User[] {
-    return this.users;
-  }
 }
