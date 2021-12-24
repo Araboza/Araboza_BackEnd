@@ -28,7 +28,7 @@ export class UserService {
         sub: UserAll.sub,
         email: UserAll.email,
         name: UserAll.name,
-        picture: UserAll.picture
+        picture: UserAll.picture,
       });
     } else {
       await this.user.save(
@@ -36,7 +36,7 @@ export class UserService {
           sub: UserAll.sub,
           email: UserAll.email,
           name: UserAll.name,
-          picture: UserAll.picture
+          picture: UserAll.picture,
         }),
       );
     }
@@ -47,8 +47,8 @@ export class UserService {
     console.log(data);
     const Token = await this.jwtService.decode(cookie);
     //console.log(Token.sub)
-    this.user.update(Token.sub,{
+    this.user.update(Token.sub, {
       ...data,
-    })
+    });
   }
 }
