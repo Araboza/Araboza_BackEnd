@@ -2,9 +2,6 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  toJSON(): string | object | Buffer {
-    throw new Error('Method not implemented.');
-  }
   @PrimaryColumn()
   sub: string;
 
@@ -23,4 +20,3 @@ export class User {
   @Column()
   introduce: string;
 }
-

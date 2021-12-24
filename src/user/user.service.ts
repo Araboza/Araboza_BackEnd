@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { throws } from 'assert';
-import { User2 } from 'src/dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -22,7 +20,7 @@ export class UserService {
     const UserAll: any = this.jwtService.decode(User.TokenId);
     console.log(UserAll);
     const user = await this.user.findOne({ sub: UserAll.sub });
-    console.log("여긴 함수",user);
+    console.log('여긴 함수', user);
     if (user) {
       console.log('이미있슴!! 그러니 업데이트함!');
       await this.user.update(UserAll.sub, {
@@ -47,8 +45,4 @@ export class UserService {
     }
     return UserAll.sub;
   }
-
- 
-
- 
 }
