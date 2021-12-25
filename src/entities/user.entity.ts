@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Portfolio } from './portfolio.entity';
 
 @Entity()
 export class User {
@@ -19,4 +20,10 @@ export class User {
 
   @Column()
   introduce: string;
+
+  @Column()
+  classNum: number;
+
+  @OneToMany(() => Portfolio, (portfolio) => portfolio.user)
+  portfolio: Portfolio[];
 }
