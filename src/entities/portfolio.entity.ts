@@ -24,8 +24,8 @@ export class Portfolio {
   @ManyToOne(() => User, (user) => user.portfolio)
   user: User;
 
-  @Column({ array: true })
-  tag: string[];
+  @Column('simple-array')
+  tags: string[];
 
   @Column()
   like: number;
