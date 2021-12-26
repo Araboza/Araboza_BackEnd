@@ -12,13 +12,15 @@ export class UserController {
   ) {}
 
   @Post('/login')
-  async GetToken(@Body() User: tokenDto, @Res() res: Response) {
+  async GetToken(
+    @Body() User: tokenDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const sub: string = await this.userService.pushData(User);
 
-    const user = await this.userService.getUser(sub);
+    const jwt = await this.jwtService.sign({ sub });
 
-    res.cookie('access_token', this.jwtService.sign({ sub: user.sub }));
-    res.send();
+    res.cookie('access_token', jwt);
   }
 
   @Post('/edit')
