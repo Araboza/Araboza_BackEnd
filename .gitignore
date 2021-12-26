@@ -27,6 +27,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+src/user/constants.ts
 
 # IDE - VSCode
 .vscode/*

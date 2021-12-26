@@ -11,36 +11,34 @@ export class UserService {
     @InjectRepository(User) private readonly user: Repository<User>,
     private jwtService: JwtService,
   ) {}
+
   getUser(sub: string) {
     const user = this.user.findOne({ sub: sub });
     return user;
   }
 
   async pushData(User): Promise<string> {
-    //console.log(User);
-    const UserAll: any = this.jwtService.decode(User.TokenId);
-    console.log(UserAll);
-    const user = await this.user.findOne({ sub: UserAll.sub });
-    console.log('여긴 함수', user);
+    const UserInfo: any = this.jwtService.decode(User.TokenId);
+
+    const user = await this.user.findOne({ sub: UserInfo.sub });
+
     if (user) {
-      console.log('이미있슴!! 그러니 업데이트함!');
-      await this.user.update(UserAll.sub, {
-        sub: UserAll.sub,
-        email: UserAll.email,
-        name: UserAll.name,
-        picture: UserAll.picture,
+      await this.user.update(UserInfo.sub, {
+        email: UserInfo.email,
+        name: UserInfo.name,
+        picture: UserInfo.picture,
       });
     } else {
       await this.user.save(
         this.user.create({
-          sub: UserAll.sub,
-          email: UserAll.email,
-          name: UserAll.name,
-          picture: UserAll.picture,
+          sub: UserInfo.sub,
+          email: UserInfo.email,
+          name: UserInfo.name,
+          picture: UserInfo.picture,
         }),
       );
     }
-    return UserAll.sub;
+    return UserInfo.sub;
   }
 
   async userEdit(data: userEditDto, cookie: string) {
