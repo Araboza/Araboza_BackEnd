@@ -22,7 +22,6 @@ export class UserController {
 
   @Get('/:userid')
   async getUser(@Param() userid: string) {
-    console.log('여긴 유저');
     return this.getUser(userid);
   }
   @Post('/login')
