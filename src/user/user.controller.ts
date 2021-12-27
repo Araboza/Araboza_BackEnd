@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Put, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { tokenDto, userEditDto } from 'src/dto/user.dto';
@@ -11,15 +20,17 @@ export class UserController {
     private jwtService: JwtService,
   ) {}
 
+  @Get('/:userid')
+  async getUser(@Param() userid: string) {
+    return this.getUser(userid);
+  }
   @Post('/login')
   async GetToken(
     @Body() User: tokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sub: string = await this.userService.pushData(User);
-
+    const sub = await this.userService.pushData(User);
     const jwt = await this.jwtService.sign({ sub });
-
     res.cookie('access_token', jwt);
   }
 

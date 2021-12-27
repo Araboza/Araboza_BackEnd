@@ -4,6 +4,9 @@ import { Portfolio } from './portfolio.entity';
 @Entity()
 export class User {
   @PrimaryColumn()
+  id: string;
+
+  @Column()
   sub: string;
 
   @Column()

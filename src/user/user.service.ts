@@ -31,6 +31,7 @@ export class UserService {
     } else {
       await this.user.save(
         this.user.create({
+          id: User.id,
           sub: UserInfo.sub,
           email: UserInfo.email,
           name: UserInfo.name,
@@ -42,9 +43,7 @@ export class UserService {
   }
 
   async userEdit(data: userEditDto, cookie: string) {
-    console.log(data);
     const Token = await this.jwtService.decode(cookie);
-    //console.log(Token.sub)
     this.user.update(Token.sub, {
       ...data,
     });
