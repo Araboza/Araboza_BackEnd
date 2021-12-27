@@ -11,7 +11,7 @@ export class UserService {
     @InjectRepository(User) private readonly user: Repository<User>,
     private jwtService: JwtService,
   ) {}
-
+  
   getUser(sub: string) {
     const user = this.user.findOne({ sub: sub });
     return user;
