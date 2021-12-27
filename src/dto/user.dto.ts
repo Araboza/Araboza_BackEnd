@@ -37,6 +37,8 @@ export class User2 {
 export class tokenDto {
   @IsString()
   readonly TokenId: string;
+  @IsString()
+  id: string;
 }
 
 export class userEditDto {

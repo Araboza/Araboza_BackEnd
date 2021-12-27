@@ -1,26 +1,39 @@
-import { Body, Controller, Post, Put, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { tokenDto, userEditDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
-export class UserController {
+export class UserController {  
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
+  @Get('/:userid')
+  async getUser(@Param() userid: string) {
+    console.log('여긴 유저');
+    return this.getUser(userid);
+  }
   @Post('/login')
   async GetToken(
     @Body() User: tokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sub: string = await this.userService.pushData(User);
-
+    const [sub, result] = await this.userService.pushData(User);
     const jwt = await this.jwtService.sign({ sub });
-
     res.cookie('access_token', jwt);
+    res.send({ result });
   }
 
   @Post('/edit')
