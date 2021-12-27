@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { userEditDto } from 'src/dto/user.dto';
+import { tokenDto, userEditDto } from 'src/dto/user.dto';
 
-type Tlqejr = {
+type TToken = {
   iss: string;
   azp: string;
   aud: string;
@@ -34,29 +34,32 @@ export class UserService {
     return user;
   }
 
-  async pushData(User): Promise<string> {
-    const UserInfo = this.jwtService.decode(User.TokenId) as Tlqejr;
+  async login(User: tokenDto) {
+    const UserData = this.jwtService.decode(User.TokenId) as TToken;
+    const result = this.user.findOne({ sub: UserData.sub });
+    if (!result) throw new BadRequestException();
 
-    const user = await this.user.findOne({ sub: UserInfo.sub });
+    return result;
+  }
 
-    if (user) {
-      await this.user.update(UserInfo.sub, {
-        email: UserInfo.email,
-        name: UserInfo.name,
-        picture: UserInfo.picture,
-      });
-    } else {
-      await this.user.save(
-        this.user.create({
-          id: User.id,
-          sub: UserInfo.sub,
-          email: UserInfo.email,
-          name: UserInfo.name,
-          picture: UserInfo.picture,
-        }),
-      );
-    }
-    return UserInfo.sub;
+  async register(User): Promise<string> {
+    const UserData = this.jwtService.decode(User.TokenId) as TToken;
+
+    const user = await this.user.findOne({ sub: UserData.sub });
+
+    if (user) throw new BadRequestException();
+
+    await this.user.save(
+      this.user.create({
+        id: User.id,
+        sub: UserData.sub,
+        email: UserData.email,
+        name: UserData.name,
+        picture: UserData.picture,
+      }),
+    );
+
+    return UserData.sub;
   }
 
   async userEdit(data: userEditDto, cookie: string) {

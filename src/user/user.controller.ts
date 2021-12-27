@@ -24,14 +24,25 @@ export class UserController {
   async getUser(@Param() userid: string) {
     return this.getUser(userid);
   }
+
   @Post('/login')
   async GetToken(
     @Body() User: tokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sub = await this.userService.pushData(User);
-    const jwt = await this.jwtService.sign({ sub });
-    res.cookie('access_token', jwt);
+    const { portfolio, sub, email, ...data } = await this.userService.login(
+      User,
+    );
+
+    const jwt = await this.jwtService.sign(sub);
+
+    res.cookie('access_token', jwt).send(data);
+  }
+
+  @Post('/register')
+  async register(@Body() User: tokenDto) {
+    await this.userService.register(User);
+    return { message: 'done', status: 201 };
   }
 
   @Post('/edit')
