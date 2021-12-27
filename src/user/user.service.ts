@@ -17,7 +17,7 @@ export class UserService {
     return user;
   }
 
-  async pushData(User) {
+  async pushData(User): Promise<string> {
     const UserInfo: any = this.jwtService.decode(User.TokenId);
 
     const user = await this.user.findOne({ sub: UserInfo.sub });
@@ -28,19 +28,18 @@ export class UserService {
         name: UserInfo.name,
         picture: UserInfo.picture,
       });
-      return [UserInfo.sub, true];
     } else {
       await this.user.save(
         this.user.create({
-          id : User.id,
+          id: User.id,
           sub: UserInfo.sub,
           email: UserInfo.email,
           name: UserInfo.name,
           picture: UserInfo.picture,
         }),
       );
-      return [UserInfo.sub, false];
     }
+    return UserInfo.sub;
   }
 
   async userEdit(data: userEditDto, cookie: string) {

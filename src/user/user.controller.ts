@@ -14,7 +14,7 @@ import { tokenDto, userEditDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
-export class UserController {  
+export class UserController {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -30,10 +30,9 @@ export class UserController {
     @Body() User: tokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const [sub, result] = await this.userService.pushData(User);
+    const sub = await this.userService.pushData(User);
     const jwt = await this.jwtService.sign({ sub });
     res.cookie('access_token', jwt);
-    res.send({ result });
   }
 
   @Post('/edit')
