@@ -12,7 +12,8 @@ export class PortfolioService {
   ) {}
 
   async getAllPortfolio() {
-    return await this.Portfolio.find();
+    const found = await this.Portfolio.find();
+    return found;
   }
 
   async pushData(portfolio: PortfolioDTO) {

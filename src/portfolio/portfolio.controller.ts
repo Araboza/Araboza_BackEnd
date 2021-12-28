@@ -17,7 +17,7 @@ export class PortfolioController {
 
   @Get()
   async getAllPortfolio() {
-    return this.portfolioService;
+    return this.portfolioService.getAllPortfolio();
   }
 
   @Post()
