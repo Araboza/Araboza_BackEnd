@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
-import { tokenDto, userEditDto } from 'src/dto/user.dto';
+import { loginDto, registerDto, userEditDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -20,27 +20,27 @@ export class UserController {
     private jwtService: JwtService,
   ) {}
 
-  @Get('/:userid')
-  async getUser(@Param() userid: string) {
-    return this.getUser(userid);
+  @Get('/search/:id')
+  async getUser(@Param() id: string) {
+    return this.userService.getUser(id);
   }
 
   @Post('/login')
-  async GetToken(
-    @Body() User: tokenDto,
+  async Login(
+    @Body() User: loginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const { portfolio, sub, email, ...data } = await this.userService.login(
       User,
     );
 
-    const jwt = await this.jwtService.sign(sub);
+    const jwt = await this.jwtService.sign({ sub });
 
     res.cookie('access_token', jwt).send(data);
   }
 
   @Post('/register')
-  async register(@Body() User: tokenDto) {
+  async register(@Body() User: registerDto) {
     await this.userService.register(User);
     return { message: 'done', status: 201 };
   }
