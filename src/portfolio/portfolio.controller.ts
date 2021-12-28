@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
 import { PortfolioDTO, PortfolioUpdateDTO } from '../dto/Portfolio.dto';
 import { User } from 'src/entities/user.entity';
@@ -28,5 +36,13 @@ export class PortfolioController {
     @Body() UpdateData: PortfolioUpdateDTO,
   ) {
     this.portfolioService.updatePortfolio(user, postName, UpdateData);
+  }
+  @Delete('/:user/:postName')
+  async deletePortfolio(
+    @Param('user') user: User,
+    @Param('postName') postName: string,
+  ) {
+    this.portfolioService.deletePortfolio(user, postName);
+    return { message: 'done', status: 200 };
   }
 }
