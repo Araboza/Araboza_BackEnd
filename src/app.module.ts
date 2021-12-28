@@ -20,7 +20,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
       synchronize: true,
     }),
     UserModule,
-    PortfolioModule,
+    PortfolioModule
   ],
 })
 export class AppModule {}
