@@ -34,12 +34,17 @@ export class User2 {
   introduce: string;
 }
 
-export class tokenDto {
+export class registerDto {
   @IsString()
   readonly TokenId: string;
 
   @IsString()
   id: string;
+}
+
+export class loginDto {
+  @IsString()
+  readonly TokenId: string;
 }
 
 export class userEditDto {

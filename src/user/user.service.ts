@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { tokenDto, userEditDto } from 'src/dto/user.dto';
+import { loginDto, registerDto, userEditDto } from 'src/dto/user.dto';
 
 type TToken = {
   iss: string;
@@ -29,25 +34,30 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  getUser(sub: string) {
-    const user = this.user.findOne({ sub: sub });
+  async getUser(id: string) {
+    const { sub, ...user } = await this.user.findOne({ id });
     return user;
   }
 
-  async login(User: tokenDto) {
-    const UserData = this.jwtService.decode(User.TokenId) as TToken;
-    const result = this.user.findOne({ sub: UserData.sub });
+  async login(User: loginDto) {
+    const UserData = (await this.jwtService.decode(User.TokenId)) as TToken;
+    const result = await this.user.findOne({ sub: UserData.sub });
+
     if (!result) throw new BadRequestException();
 
     return result;
   }
 
-  async register(User): Promise<string> {
+  async register(User: registerDto): Promise<void> {
     const UserData = this.jwtService.decode(User.TokenId) as TToken;
 
-    const user = await this.user.findOne({ sub: UserData.sub });
+    const subCompare = await this.user.findOne({ sub: UserData.sub });
 
-    if (user) throw new BadRequestException();
+    if (subCompare) throw new ConflictException();
+
+    const idCompare = await this.user.findOne({ id: User.id });
+
+    if (idCompare) throw new ForbiddenException();
 
     await this.user.save(
       this.user.create({
@@ -58,8 +68,6 @@ export class UserService {
         picture: UserData.picture,
       }),
     );
-
-    return UserData.sub;
   }
 
   async userEdit(data: userEditDto, cookie: string) {
