@@ -28,4 +28,8 @@ export class PortfolioService {
       ...UpdateData,
     });
   }
+  async deletePortfolio(user: User, postName: string) {
+    this.Portfolio.delete({ user: user, title: postName });
+    return { message: 'done', status: 200 };
+  }
 }
