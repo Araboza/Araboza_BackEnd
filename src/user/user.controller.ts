@@ -20,6 +20,12 @@ export class UserController {
     private jwtService: JwtService,
   ) {}
 
+  @Get()
+  async My(@Req() req: Request) {
+    const token = req.cookies['access_token'];
+    return this.userService.My(token);
+  }
+
   @Get('/search/:id')
   async getUser(@Param() id: string) {
     return this.userService.getUser(id);

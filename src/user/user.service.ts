@@ -34,6 +34,13 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
+  async My(token: string) {
+    const data = await this.jwtService.decode(token);
+
+    const { sub, ...user } = await this.user.findOne({ sub: data.sub });
+    return user;
+  }
+
   async getUser(id: string) {
     const { sub, ...user } = await this.user.findOne({ id });
     return user;
