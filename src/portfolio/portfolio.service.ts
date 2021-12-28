@@ -14,7 +14,9 @@ export class PortfolioService {
   async getAllPortfolio() {
     return await this.Portfolio.find();
   }
-
+  async findPortfolio(user: User, postName: string) {
+    return await this.Portfolio.findOne({ user: user, title: postName });
+  }
   async pushData(portfolio: PortfolioDTO) {
     await this.Portfolio.save(portfolio);
   }

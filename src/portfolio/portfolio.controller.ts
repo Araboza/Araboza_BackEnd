@@ -45,4 +45,12 @@ export class PortfolioController {
     this.portfolioService.deletePortfolio(user, postName);
     return { message: 'done', status: 200 };
   }
+  @Get('/:user/:postName')
+  async findPortfolio(
+    @Param('user') user: User,
+    @Param('postName') postName: string,
+  ) {
+    const Userdata = this.portfolioService.findPortfolio(user,postName)
+    return Userdata
+  }
 }
