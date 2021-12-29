@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
 import { PortfolioDTO, PortfolioUpdateDTO } from '../dto/Portfolio.dto';
 import { User } from 'src/entities/user.entity';
+import { Request } from 'express';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -39,10 +41,24 @@ export class PortfolioController {
   }
   @Delete('/:user/:postName')
   async deletePortfolio(
+    @Param('user') user: any,
+    @Param('postName') postName: string,
+    @Req() req: Request,
+  ) {
+    const token = req.cookies['access_token'];
+    const result = await this.portfolioService.right(token, user,postName);
+    //this.portfolioService.deletePortfolio(user, postName);
+    console.log('data',result)
+    if (true) return { message: 'done', status: 200 };
+    else return { message: 'failed', status: 400 };
+  }
+
+  @Get('/:user/:postName')
+  async findPortfolio(
     @Param('user') user: User,
     @Param('postName') postName: string,
   ) {
-    this.portfolioService.deletePortfolio(user, postName);
-    return { message: 'done', status: 200 };
+    const Userdata = this.portfolioService.findPortfolio(user, postName);
+    return Userdata;
   }
 }

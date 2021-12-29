@@ -14,26 +14,6 @@ export class UserDto {
   picture: string;
 }
 
-export class User2 {
-  @IsString()
-  name: string;
-
-  @IsString()
-  email: string;
-
-  @IsString()
-  sub: string;
-
-  @IsString()
-  picture: string;
-
-  @IsString({ each: true })
-  major: string[];
-
-  @IsString()
-  introduce: string;
-}
-
 export class registerDto {
   @IsString()
   readonly TokenId: string;
