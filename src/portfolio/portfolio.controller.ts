@@ -76,7 +76,7 @@ export class PortfolioController {
     @Param('user') user: User,
     @Param('postName') postName: string,
   ) {
-    this.portfolioService.deletePortfolio(user, postName);
-    return { message: 'done', status: 200 };
+    const Userdata = this.portfolioService.findPortfolio(user, postName);
+    return Userdata;
   }
 }

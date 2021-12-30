@@ -5,6 +5,7 @@ import { User } from '../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { PortfolioModule } from 'src/portfolio/portfolio.module';
 
 @Module({
   imports: [
@@ -14,8 +15,8 @@ import { jwtConstants } from './constants';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  exports: [UserService],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

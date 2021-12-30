@@ -1,5 +1,6 @@
+
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsArray } from 'class-validator';
+import { IsString, IsArray } from 'class-validator';
 import { User } from 'src/entities/user.entity';
 
 export class PortfolioDTO {
@@ -18,14 +19,6 @@ export class PortfolioDTO {
   })
   @IsArray()
   tags: string[];
-
-  @ApiProperty({
-    title:'유저 아이디',
-    description: '포트폴리오를 작성한 유저의 아이디 입니다.',
-    example: 'khs3994',
-  })
-  @IsString()
-  user: User;
 
   @ApiProperty({
     title:'이미지 URL',

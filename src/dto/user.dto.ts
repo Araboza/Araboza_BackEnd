@@ -35,26 +35,6 @@ export class UserDto {
   picture: string;
 }
 
-export class User2 {
-  @IsString()
-  name: string;
-
-  @IsString()
-  email: string;
-
-  @IsString()
-  sub: string;
-
-  @IsString()
-  picture: string;
-
-  @IsString({ each: true })
-  major: string[];
-
-  @IsString()
-  introduce: string;
-}
-
 export class registerDto {
   @ApiProperty({
     title:'회원가입시 사용자 토큰',
