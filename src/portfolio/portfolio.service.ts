@@ -17,8 +17,7 @@ export class PortfolioService {
   ) {}
 
   async getAllPortfolio() {
-    const found = await this.Portfolio.query('select * from portfolio;');
-    return found;
+    return await this.Portfolio.query('select * from portfolio;');
   }
   
   async findPortfolio(user: User, postName: string) {
@@ -34,12 +33,12 @@ export class PortfolioService {
     postName: string,
     UpdateData: PortfolioUpdateDTO,
   ) {
-    const data = await this.Portfolio.findOne({ title: postName, user: user });
+    const data = await this.Portfolio.findOne({ title: postName, user });
     await this.Portfolio.update(data.id, {
       ...UpdateData,
     });
   }
-  
+
   async deletePortfolio(user: any, postName: string) {
     await this.Portfolio.delete({ user: user, title: postName });
     return { message: 'done', status: 200 };
@@ -66,5 +65,11 @@ export class PortfolioService {
       return false;
     } else return true;
   }
-  async findPortfolio(user, postName) {}
+
+  async findPortfolio(user, title) {
+    return await this.Portfolio.findOne(
+      { user, title },
+      { relations: ['user'] },
+    );
+  }
 }
