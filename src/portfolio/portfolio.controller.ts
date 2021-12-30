@@ -12,8 +12,9 @@ import { PortfolioService } from './portfolio.service';
 import { PortfolioDTO, PortfolioUpdateDTO } from '../dto/Portfolio.dto';
 import { User } from 'src/entities/user.entity';
 import { Request } from 'express';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('PORTFOLIO')
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
