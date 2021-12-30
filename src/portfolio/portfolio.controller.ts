@@ -77,7 +77,6 @@ export class PortfolioController {
     @Param('user') user: User,
     @Param('postName') postName: string,
   ) {
-    const Userdata = this.portfolioService.findPortfolio(user, postName);
-    return Userdata;
+    return this.portfolioService.findPortfolio(user, postName);
   }
 }
