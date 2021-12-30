@@ -16,7 +16,7 @@ export class PortfolioService {
   ) {}
 
   async getAllPortfolio() {
-    const found = await this.Portfolio.find();
+    const found = await this.Portfolio.query('select * from portfolio;');
     return found;
   }
 
@@ -33,22 +33,18 @@ export class PortfolioService {
       ...UpdateData,
     });
   }
-  async deletePortfolio(user:any, postName: string) {
-    console.log(user);
-    this.Portfolio.delete({ user : user , title: postName});
+  async deletePortfolio(user: any, postName: string) {
+    this.Portfolio.delete({ user: user, title: postName });
     return { message: 'done', status: 200 };
   }
-  async right(token: string, user: any ,postName:string) {
+  async right(token: string, user: any, postName: string) {
     const first = this.jwtService.decode(token);
     const find = await this.user.findOne({ sub: first.sub });
-    if(find.id == user){
-      this.deletePortfolio(user,postName)
+    if (find.id == user) {
+      this.deletePortfolio(user, postName);
+    } else {
+      return false;
     }
-    else{
-     return false
-    }  
   }
-  async findPortfolio(user,postName){
-
-  }
+  async findPortfolio(user, postName) {}
 }

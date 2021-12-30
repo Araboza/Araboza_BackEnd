@@ -9,7 +9,7 @@ import { PortfolioService } from './portfolio.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Portfolio,User]),
+    TypeOrmModule.forFeature([Portfolio, User]),
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1d' },

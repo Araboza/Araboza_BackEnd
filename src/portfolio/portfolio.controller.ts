@@ -46,9 +46,9 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.right(token, user,postName);
+    const result = await this.portfolioService.right(token, user, postName);
     //this.portfolioService.deletePortfolio(user, postName);
-    console.log('data',result)
+    console.log('data', result);
     if (true) return { message: 'done', status: 200 };
     else return { message: 'failed', status: 400 };
   }
