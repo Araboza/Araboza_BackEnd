@@ -1,19 +1,11 @@
-import { IsString, IsNumber, IsArray } from 'class-validator';
-import { User } from 'src/entities/user.entity';
+import { IsString, IsArray } from 'class-validator';
 
 export class PortfolioDTO {
-    
   @IsString()
   title: string;
 
   @IsArray()
   tags: string[];
-
-  @IsNumber()
-  like: number;
-
-  @IsString()
-  user: User;
 
   @IsString()
   imgUrl: string;
@@ -25,9 +17,6 @@ export class PortfolioUpdateDTO {
 
   @IsArray()
   tags: string[];
-
-  @IsNumber()
-  like: number;
 
   @IsString()
   imgUrl: string;
