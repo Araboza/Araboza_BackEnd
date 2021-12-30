@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
 import { PortfolioDTO, PortfolioUpdateDTO } from '../dto/Portfolio.dto';
 import { User } from 'src/entities/user.entity';
+import { Request } from 'express';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -21,12 +23,16 @@ export class PortfolioController {
   }
 
   @Post()
-  async postPortfolio(@Body() portfolio: PortfolioDTO) {
-    await this.portfolioService.pushData(portfolio);
-    return {
-      statusCode: 201,
-      message: '저장됨',
-    };
+  async postPortfolio(@Body() portfolio: PortfolioDTO, @Req() req: Request) {
+    const token = req.cookies['access_token'];
+    const result = await this.portfolioService.makeportfolio(
+      token,
+      portfolio.title,
+    );
+    if (result) {
+      await this.portfolioService.pushData(portfolio);
+      return { message: 'done', status: 200 };
+    } else return { message: 'failed', status: 400 };
   }
 
   @Patch('/:user/:postName')
@@ -34,23 +40,33 @@ export class PortfolioController {
     @Param('user') user: User,
     @Param('postName') postName: string,
     @Body() UpdateData: PortfolioUpdateDTO,
+    @Req() req: Request,
   ) {
-    this.portfolioService.updatePortfolio(user, postName, UpdateData);
+    const result = req.cookies['access_token'];
+    if (result) {
+      await this.portfolioService.updatePortfolio(user, postName, UpdateData);
+      return { message: 'done', status: 200 };
+    } else return { message: 'failed', status: 400 };
   }
   @Delete('/:user/:postName')
   async deletePortfolio(
     @Param('user') user: User,
     @Param('postName') postName: string,
+    @Req() req: Request
   ) {
-    this.portfolioService.deletePortfolio(user, postName);
-    return { message: 'done', status: 200 };
+    const token = req.cookies['access_token'];
+    const result = await this.portfolioService.rightDelete(token, user);
+    if (result) {
+      await this.portfolioService.deletePortfolio(user, postName);
+      return { message: 'done', status: 200 };
+    } else return { message: 'failed', status: 400 };
   }
   @Get('/:user/:postName')
   async findPortfolio(
     @Param('user') user: User,
     @Param('postName') postName: string,
   ) {
-    const Userdata = this.portfolioService.findPortfolio(user,postName)
-    return Userdata
+    const Userdata = await this.portfolioService.findPortfolio(user, postName);
+    return Userdata;
   }
 }
