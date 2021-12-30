@@ -12,16 +12,26 @@ import { PortfolioService } from './portfolio.service';
 import { PortfolioDTO, PortfolioUpdateDTO } from '../dto/Portfolio.dto';
 import { User } from 'src/entities/user.entity';
 import { Request } from 'express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('PORTFOLIO')
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
 
+  @ApiOperation({
+    summary: '포트폴리오 가져오기',
+    description: '모든 포트폴리오 가져오기',
+  })
   @Get()
   async getAllPortfolio() {
     return this.portfolioService.getAllPortfolio();
   }
 
+  @ApiOperation({
+    summary: '포트폴리오 생성하기',
+    description: '새로운 포트폴리오를 생성합니다',
+  })
   @Post()
   async postPortfolio(@Body() portfolio: PortfolioDTO) {
     await this.portfolioService.pushData(portfolio);
@@ -31,6 +41,10 @@ export class PortfolioController {
     };
   }
 
+  @ApiOperation({
+    summary: '포트폴리오 수정하기',
+    description: '포트폴리오를 수정합니다',
+  })
   @Patch('/:user/:postName')
   async editPortfolio(
     @Param('user') user: User,
@@ -39,6 +53,11 @@ export class PortfolioController {
   ) {
     this.portfolioService.updatePortfolio(user, postName, UpdateData);
   }
+
+  @ApiOperation({
+    summary: '포트폴리오 삭제하기',
+    description: '포트폴리오를 삭제합니다',
+  })
   @Delete('/:user/:postName')
   async deletePortfolio(
     @Param('user') user: any,
