@@ -5,25 +5,30 @@ import { Portfolio } from 'src/entities/portfolio.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
 export class PortfolioService {
   constructor(
     @InjectRepository(Portfolio)
     private readonly Portfolio: Repository<Portfolio>,
-    private jwtService:JwtService,
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
-    private readonly user: Repository<User>
+    private readonly user: Repository<User>,
   ) {}
 
   async getAllPortfolio() {
-    return await this.Portfolio.find();
+    const found = await this.Portfolio.query('select * from portfolio;');
+    return found;
   }
+  
   async findPortfolio(user: User, postName: string) {
     return await this.Portfolio.findOne({ user: user, title: postName });
   }
+  
   async pushData(portfolio: PortfolioDTO) {
     await this.Portfolio.save(portfolio);
   }
+  
   async updatePortfolio(
     user: User,
     postName: string,
@@ -34,11 +39,12 @@ export class PortfolioService {
       ...UpdateData,
     });
   }
+  
   async deletePortfolio(user: any, postName: string) {
-    console.log(user);
     await this.Portfolio.delete({ user: user, title: postName });
     return { message: 'done', status: 200 };
   }
+  
   async rightDelete(token: string, user: any) {
     const first = await this.jwtService.decode(token);
     const find = await this.user.findOne({ sub: first.sub });
@@ -60,4 +66,5 @@ export class PortfolioService {
       return false;
     } else return true;
   }
+  async findPortfolio(user, postName) {}
 }

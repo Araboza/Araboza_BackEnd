@@ -8,11 +8,13 @@ import { PortfolioController } from './portfolio.controller';
 import { PortfolioService } from './portfolio.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Portfolio,User]),
+  imports: [
+    TypeOrmModule.forFeature([Portfolio, User]),
     JwtModule.register({
-    secret: jwtConstants.secret,
-    signOptions: { expiresIn: '1d' },
-  }),],
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
   providers: [PortfolioService],
   controllers: [PortfolioController],
 })
