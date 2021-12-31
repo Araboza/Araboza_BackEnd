@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -35,7 +36,7 @@ export class PortfolioController {
   @Post()
   async postPortfolio(@Body() portfolio: PortfolioDTO, @Req() req: Request) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.makeportfolio(
+    const result = await this.portfolioService.rightMake(
       token,
       portfolio.title,
     );
@@ -56,7 +57,8 @@ export class PortfolioController {
     @Body() UpdateData: PortfolioUpdateDTO,
     @Req() req: Request,
   ) {
-    const result = req.cookies['access_token'];
+    const token = req.cookies['access_token'];
+    const result = await this.portfolioService.right(token, user);
     if (result) {
       await this.portfolioService.updatePortfolio(user, postName, UpdateData);
       return { message: 'done', status: 200 };
@@ -74,32 +76,24 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.right(token, user, postName);
-    //this.portfolioService.deletePortfolio(user, postName);
-    console.log('data', result);
-    if (true) return { message: 'done', status: 200 };
-    else return { message: 'failed', status: 400 };
+    const result = await this.portfolioService.right(token, user);
+
+    // 에러 처리
+
+    if (result) return this.portfolioService.deletePortfolio(user, postName);
+
+
   }
 
   @Get('/:user/:postName')
-  async findPortfolio(
+  async findOnePortfolio(
     @Param('user') user: User,
     @Param('postName') postName: string,
-    @Req() req: Request
+    @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.rightDelete(token, user);
-    if (result) {
-      await this.portfolioService.deletePortfolio(user, postName);
-      return { message: 'done', status: 200 };
-    } else return { message: 'failed', status: 400 };
-  }
-  @Get('/:user/:postName')
-  async findPortfolio(
-    @Param('user') user: User,
-    @Param('postName') postName: string,
-  ) {
-
-    return this.portfolioService.findPortfolio(user, postName);
+    const result = await this.portfolioService.right(token, user);
+    if (!result) throw new NotFoundException();
+    return this.portfolioService.findOnePortfolio(user, postName);
   }
 }
