@@ -20,8 +20,10 @@ export class PortfolioService {
     return await this.Portfolio.query('select * from portfolio;');
   }
 
-  async pushData(portfolio: PortfolioDTO) {
-    await this.Portfolio.save(portfolio);
+  async pushData(portfolio: PortfolioDTO, token: string) {
+    const sub = await this.jwtService.decode(token);
+    const user = await this.user.findOne({ sub: sub.sub });
+    await this.Portfolio.save({ ...portfolio, user: user });
   }
 
   async updatePortfolio(
@@ -29,9 +31,12 @@ export class PortfolioService {
     title: string,
     UpdateData: PortfolioUpdateDTO,
   ) {
-    await this.Portfolio.update({user, title}, {
-      ...UpdateData,
-    });
+    await this.Portfolio.update(
+      { user, title },
+      {
+        ...UpdateData,
+      },
+    );
   }
 
   async deletePortfolio(user: any, postName: string) {
@@ -42,10 +47,10 @@ export class PortfolioService {
   async right(token: string, user: any) {
     const first = await this.jwtService.decode(token);
     const find = await this.user.findOne({ sub: first.sub });
-    return find.id == user
+    return find.id == user;
   }
 
-  async rightMake(token: string, postName: string) {
+  async rightMake(token: string, postName: string): Promise<boolean> {
     const data = await this.jwtService.decode(token);
     const user: User = await this.user.findOne({ sub: data.sub });
     const portfolio = await this.Portfolio.findOne({
