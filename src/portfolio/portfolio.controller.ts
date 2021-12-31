@@ -41,7 +41,7 @@ export class PortfolioController {
       portfolio.title,
     );
     if (result) {
-      await this.portfolioService.pushData(portfolio);
+      await this.portfolioService.pushData(portfolio,token);
       return { message: 'done', status: 200 };
     } else return { message: 'failed', status: 400 };
   }
