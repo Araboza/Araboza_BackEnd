@@ -85,6 +85,10 @@ export class PortfolioController {
 
   }
 
+  @ApiOperation({
+    summary: '포트폴리오 찾기',
+    description: '포트폴리오를 찾습니다',
+  })
   @Get('/:user/:postName')
   async findOnePortfolio(
     @Param('user') user: User,
