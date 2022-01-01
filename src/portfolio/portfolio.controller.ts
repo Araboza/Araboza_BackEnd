@@ -41,7 +41,7 @@ export class PortfolioController {
       portfolio.title,
     );
     if (result) {
-      await this.portfolioService.pushData(portfolio,token);
+      await this.portfolioService.pushData(portfolio, token);
       return { message: 'done', status: 200 };
     } else return { message: 'failed', status: 400 };
   }
@@ -58,11 +58,11 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.right(token, user);
+    const result = await this.portfolioService.rightEdit(token, user, postName);
     if (result) {
       await this.portfolioService.updatePortfolio(user, postName, UpdateData);
       return { message: 'done', status: 200 };
-    } else return { message: 'failed', status: 400 };
+    } else return { message: 'failed', status: 404 };
   }
 
   @ApiOperation({
@@ -71,7 +71,7 @@ export class PortfolioController {
   })
   @Delete('/:user/:postName')
   async deletePortfolio(
-    @Param('user') user: any,
+    @Param('user') user: User,
     @Param('postName') postName: string,
     @Req() req: Request,
   ) {
@@ -81,8 +81,6 @@ export class PortfolioController {
     // 에러 처리
 
     if (result) return this.portfolioService.deletePortfolio(user, postName);
-
-
   }
 
   @Get('/:user/:postName')
@@ -96,4 +94,6 @@ export class PortfolioController {
     if (!result) throw new NotFoundException();
     return this.portfolioService.findOnePortfolio(user, postName);
   }
+  @Get('/:user')
+  async findOtherUser(@Param() user: string) {}
 }

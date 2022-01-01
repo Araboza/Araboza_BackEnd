@@ -61,6 +61,24 @@ export class PortfolioService {
       return false;
     } else return true;
   }
+  async rightEdit(
+    token: string,
+    user: User,
+    postName: string,
+  ): Promise<boolean> {
+    const cookie = await this.jwtService.decode(token);
+    const userData = await this.user.findOne({ sub: cookie.sub });
+    const portfolioData = await this.Portfolio.findOne(
+      {
+        user: user,
+        title: postName,
+      },
+      { relations: ['user'] },
+    );
+    if (portfolioData) {
+      return userData.id == portfolioData.user.id;
+    } else return false;
+  }
 
   async findOnePortfolio(user, title) {
     return await this.Portfolio.findOne(
