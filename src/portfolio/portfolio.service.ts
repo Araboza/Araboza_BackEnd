@@ -44,12 +44,6 @@ export class PortfolioService {
     return { message: 'done', status: 200 };
   }
 
-  async right(token: string, user: any) {
-    const first = await this.jwtService.decode(token);
-    const find = await this.user.findOne({ sub: first.sub });
-    return find.id == user;
-  }
-
   async rightMake(token: string, postName: string): Promise<boolean> {
     const data = await this.jwtService.decode(token);
     const user: User = await this.user.findOne({ sub: data.sub });
@@ -61,7 +55,7 @@ export class PortfolioService {
       return false;
     } else return true;
   }
-  async rightEdit(
+  async right(
     token: string,
     user: User,
     postName: string,

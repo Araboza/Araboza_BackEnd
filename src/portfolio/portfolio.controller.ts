@@ -58,7 +58,7 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.rightEdit(token, user, postName);
+    const result = await this.portfolioService.right(token, user, postName);
     if (result) {
       await this.portfolioService.updatePortfolio(user, postName, UpdateData);
       return { message: 'done', status: 200 };
@@ -76,7 +76,7 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.right(token, user);
+    const result = await this.portfolioService.right(token, user, postName);
 
     // 에러 처리
 
@@ -90,7 +90,7 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.right(token, user);
+    const result = await this.portfolioService.right(token, user, postName);
     if (!result) throw new NotFoundException();
     return this.portfolioService.findOnePortfolio(user, postName);
   }
