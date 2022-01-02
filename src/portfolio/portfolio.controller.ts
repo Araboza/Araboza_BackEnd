@@ -80,7 +80,8 @@ export class PortfolioController {
 
     // 에러 처리
 
-    if (result) return this.portfolioService.deletePortfolio(user, postName);
+    if (result)
+      return await this.portfolioService.deletePortfolio(user, postName);
   }
 
   @Get('/:user/:postName')
@@ -92,8 +93,17 @@ export class PortfolioController {
     const token = req.cookies['access_token'];
     const result = await this.portfolioService.right(token, user, postName);
     if (!result) throw new NotFoundException();
-    return this.portfolioService.findOnePortfolio(user, postName);
+    return await this.portfolioService.findOnePortfolio(user, postName);
   }
   @Get('/:user')
   async findOtherUser(@Param() user: string) {}
+
+  @Get('/:user/:postName/like')
+  async like(
+    @Param('user') user: User,
+    @Param('postName') postName: string,
+    @Body() toggle,
+  ) {
+    await this.portfolioService.like(user, postName, toggle);
+  }
 }

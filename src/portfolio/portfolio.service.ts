@@ -55,11 +55,7 @@ export class PortfolioService {
       return false;
     } else return true;
   }
-  async right(
-    token: string,
-    user: User,
-    postName: string,
-  ): Promise<boolean> {
+  async right(token: string, user: User, postName: string): Promise<boolean> {
     const cookie = await this.jwtService.decode(token);
     const userData = await this.user.findOne({ sub: cookie.sub });
     const portfolioData = await this.Portfolio.findOne(
@@ -79,5 +75,19 @@ export class PortfolioService {
       { user, title },
       { relations: ['user'] },
     );
+  }
+  async like(user, postName, toggle) {
+    const like = await this.Portfolio.findOne({ user: user, title: postName });
+    if (toggle.toggle) {
+      await this.Portfolio.update(
+        { user: user, title: postName },
+        { like: like.like + 1 },
+      );
+    } else {
+      await this.Portfolio.update(
+        { user: user, title: postName },
+        { like: like.like <= 0 ? 0 : like.like-1 },
+      );
+    }
   }
 }
