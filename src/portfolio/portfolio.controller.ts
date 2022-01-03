@@ -59,7 +59,12 @@ export class PortfolioController {
     @Req() req: Request,
   ) {
     const token = req.cookies['access_token'];
-    const result = await this.portfolioService.rightEdit(token, user, postName,UpdateData);
+    const result = await this.portfolioService.rightEdit(
+      token,
+      user,
+      postName,
+      UpdateData,
+    );
     if (result) {
       await this.portfolioService.updatePortfolio(user, postName, UpdateData);
       throw new HttpException('성공이요', 200);
@@ -99,7 +104,7 @@ export class PortfolioController {
     if (!result) throw new NotFoundException();
     return [
       await this.portfolioService.findOnePortfolio(user, postName),
-     result ? true : false,
+      result ? true : false,
     ];
   }
   @Get('/:user')

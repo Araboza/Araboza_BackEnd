@@ -70,7 +70,12 @@ export class PortfolioService {
     } else return false;
   }
 
-  async rightEdit(token: string, user: User, postName: string,UpdateData:PortfolioUpdateDTO): Promise<boolean> {
+  async rightEdit(
+    token: string,
+    user: User,
+    postName: string,
+    UpdateData: PortfolioUpdateDTO,
+  ): Promise<boolean> {
     const cookie = await this.jwtService.decode(token);
     const userData: User = await this.user.findOne({ sub: cookie.sub });
     const portfolioData = await this.Portfolio.findOne(
@@ -80,11 +85,15 @@ export class PortfolioService {
       },
       { relations: ['user'] },
     );
-    const UpportfolioData = await this.Portfolio.findOne({user:user,title:UpdateData.title})
+    const UpportfolioData = await this.Portfolio.findOne({
+      user: user,
+      title: UpdateData.title,
+    });
     if (portfolioData.user.id == userData.id) {
-      if(UpportfolioData) throw new HttpException('이미 있는 제목입니다',400);
+      if (UpportfolioData) throw new HttpException('이미 있는 제목입니다', 400);
       else return true;
-    } else throw new HttpException('유저가 포트폴리오 수정권한이 없습니다',400)
+    } else
+      throw new HttpException('유저가 포트폴리오 수정권한이 없습니다', 400);
   }
 
   async findOnePortfolio(user, title) {
@@ -129,8 +138,8 @@ export class PortfolioService {
       }
     }
   }
-  async findOtherUser(user:User){
-    const userData = await this.Portfolio.find({user:user})
+  async findOtherUser(user: User) {
+    const userData = await this.Portfolio.find({ user: user });
     return userData;
   }
 }
