@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray } from 'class-validator';
+import { IsString, IsArray, IsNumber } from 'class-validator';
 
 export class PortfolioDTO {
   @ApiProperty({
@@ -37,6 +37,8 @@ export class PortfolioDTO {
 }
 
 export class PortfolioUpdateDTO {
+  @IsNumber()
+  id: number;
   @ApiProperty({
     title: '포트폴리오 수정시 수정된 제목',
     description: '포트폴리오 수정시 수정된 제목 입니다.',

@@ -108,7 +108,7 @@ export class PortfolioController {
     ];
   }
   @Get('/:user')
-  async findOtherUser(@Param('user') user: User) {
+  async findOtherUser(@Param('user') user: string) {
     const userData = await this.portfolioService.findOtherUser(user);
     return userData;
   }
