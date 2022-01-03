@@ -89,8 +89,9 @@ export class PortfolioService {
       user: user,
       title: UpdateData.title,
     });
-    if (portfolioData.user.id == userData.id) {
-      if (UpportfolioData) throw new HttpException('이미 있는 제목입니다', 400);
+    if (portfolioData.user.id === userData.id) {
+      if (UpportfolioData && UpportfolioData.id !== UpdateData.id)
+        throw new HttpException('이미 있는 제목입니다', 400);
       else return true;
     } else
       throw new HttpException('유저가 포트폴리오 수정권한이 없습니다', 400);
@@ -138,8 +139,11 @@ export class PortfolioService {
       }
     }
   }
-  async findOtherUser(user: User) {
-    const userData = await this.Portfolio.find({ user: user });
+  async findOtherUser(user: string) {
+    const userData = await this.user.findOne(
+      { id: user },
+      { relations: ['portfolio'] },
+    );
     return userData;
   }
 }
