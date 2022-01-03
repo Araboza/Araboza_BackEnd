@@ -129,4 +129,8 @@ export class PortfolioService {
       }
     }
   }
+  async findOtherUser(user:User){
+    const userData = await this.Portfolio.find({user:user})
+    return userData;
+  }
 }
