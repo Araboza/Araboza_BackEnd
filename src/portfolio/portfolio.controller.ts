@@ -105,7 +105,7 @@ export class PortfolioController {
   @Get('/:user')
   async findOtherUser(@Param() user: string) {}
 
-  @Get('/:user/:postName/like')
+  @Post('/:user/:postName/like')
   async like(
     @Param('user') user: User,
     @Param('postName') postName: string,

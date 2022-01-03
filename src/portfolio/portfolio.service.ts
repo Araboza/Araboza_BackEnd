@@ -77,6 +77,7 @@ export class PortfolioService {
   }
   async like(user, postName, toggle) {
     const like = await this.Portfolio.findOne({ user: user, title: postName });
+    console.log(toggle);
     if (toggle.toggle) {
       await this.Portfolio.update(
         { user: user, title: postName },
@@ -85,15 +86,17 @@ export class PortfolioService {
     } else {
       await this.Portfolio.update(
         { user: user, title: postName },
-        { like: like.like <= 0 ? 0 : like.like-1 },
+        { like: like.like <= 0 ? 0 : like.like - 1 },
       );
     }
   }
-  async cookieUserfind(Token:string) : Promise<string>{
-    try{
-      const verify = await this.jwtService.verify(Token, {secret: 'MYARABOZA1@3$'})
+  async cookieUserfind(Token: string): Promise<string> {
+    try {
+      const verify = await this.jwtService.verify(Token, {
+        secret: 'MYARABOZA1@3$',
+      });
       return verify;
-  }catch (error) {
+    } catch (error) {
       switch (error.message) {
         case 'INVALID_TOKEN':
         case 'TOKEN_IS_ARRAY':
@@ -101,10 +104,10 @@ export class PortfolioService {
           throw new HttpException('유저가 없습니다', 400);
 
         case 'EXPIRED_TOKEN':
-          throw new HttpException('토큰이 만료되었습니다.',401);
-        
+          throw new HttpException('토큰이 만료되었습니다.', 401);
+
         default:
-          throw new HttpException('서버 오류입니다.',500);
+          throw new HttpException('서버 오류입니다.', 500);
       }
     }
   }
