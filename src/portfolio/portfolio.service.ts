@@ -95,6 +95,7 @@ export class PortfolioService {
   }
   async like(user, postName, toggle) {
     const like = await this.Portfolio.findOne({ user: user, title: postName });
+    console.log(toggle);
     if (toggle.toggle) {
       await this.Portfolio.update(
         { user: user, title: postName },
