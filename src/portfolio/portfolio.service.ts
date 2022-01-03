@@ -54,6 +54,7 @@ export class PortfolioService {
       return false;
     } else return true;
   }
+
   async right(token: string, user: User, postName: string): Promise<boolean> {
     const cookie = await this.jwtService.decode(token);
     const userData = await this.user.findOne({ sub: cookie.sub });
@@ -67,6 +68,23 @@ export class PortfolioService {
     if (portfolioData) {
       return userData.id == portfolioData.user.id;
     } else return false;
+  }
+
+  async rightEdit(token: string, user: User, postName: string,UpdateData:PortfolioUpdateDTO): Promise<boolean> {
+    const cookie = await this.jwtService.decode(token);
+    const userData: User = await this.user.findOne({ sub: cookie.sub });
+    const portfolioData = await this.Portfolio.findOne(
+      {
+        user: user,
+        title: postName,
+      },
+      { relations: ['user'] },
+    );
+    const UpportfolioData = await this.Portfolio.findOne({user:user,title:UpdateData.title})
+    if (portfolioData.user.id == userData.id) {
+      if(UpportfolioData) throw new HttpException('이미 있는 제목입니다',400);
+      else return true;
+    } else throw new HttpException('유저가 포트폴리오 수정권한이 없습니다',400)
   }
 
   async findOnePortfolio(user, title) {
@@ -85,15 +103,17 @@ export class PortfolioService {
     } else {
       await this.Portfolio.update(
         { user: user, title: postName },
-        { like: like.like <= 0 ? 0 : like.like-1 },
+        { like: like.like <= 0 ? 0 : like.like - 1 },
       );
     }
   }
-  async cookieUserfind(Token:string) : Promise<string>{
-    try{
-      const verify = await this.jwtService.verify(Token, {secret: 'MYARABOZA1@3$'})
+  async cookieUserfind(Token: string): Promise<string> {
+    try {
+      const verify = await this.jwtService.verify(Token, {
+        secret: 'MYARABOZA1@3$',
+      });
       return verify;
-  }catch (error) {
+    } catch (error) {
       switch (error.message) {
         case 'INVALID_TOKEN':
         case 'TOKEN_IS_ARRAY':
@@ -101,10 +121,10 @@ export class PortfolioService {
           throw new HttpException('유저가 없습니다', 400);
 
         case 'EXPIRED_TOKEN':
-          throw new HttpException('토큰이 만료되었습니다.',401);
-        
+          throw new HttpException('토큰이 만료되었습니다.', 401);
+
         default:
-          throw new HttpException('서버 오류입니다.',500);
+          throw new HttpException('서버 오류입니다.', 500);
       }
     }
   }
