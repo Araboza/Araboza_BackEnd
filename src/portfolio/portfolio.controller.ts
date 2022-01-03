@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   NotFoundException,
   Param,
   Patch,
@@ -61,8 +62,8 @@ export class PortfolioController {
     const result = await this.portfolioService.right(token, user, postName);
     if (result) {
       await this.portfolioService.updatePortfolio(user, postName, UpdateData);
-      return { message: 'done', status: 200 };
-    } else return { message: 'failed', status: 404 };
+      throw new HttpException('성공이요', 200);
+    } else throw new HttpException('실패함', 400);
   }
 
   @ApiOperation({
@@ -77,7 +78,6 @@ export class PortfolioController {
   ) {
     const token = req.cookies['access_token'];
     const result = await this.portfolioService.right(token, user, postName);
-
     // 에러 처리
 
     if (result)
@@ -93,7 +93,10 @@ export class PortfolioController {
     const token = req.cookies['access_token'];
     const result = await this.portfolioService.right(token, user, postName);
     if (!result) throw new NotFoundException();
-    return await this.portfolioService.findOnePortfolio(user, postName);
+    return [
+      await this.portfolioService.findOnePortfolio(user, postName),
+      result ? true : false,
+    ];
   }
   @Get('/:user')
   async findOtherUser(@Param() user: string) {}
