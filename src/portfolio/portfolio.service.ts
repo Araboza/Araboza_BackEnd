@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PortfolioDTO, PortfolioUpdateDTO } from 'src/dto/Portfolio.dto';
 import { Portfolio } from 'src/entities/portfolio.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
-
 @Injectable()
 export class PortfolioService {
   constructor(
@@ -88,6 +87,25 @@ export class PortfolioService {
         { user: user, title: postName },
         { like: like.like <= 0 ? 0 : like.like-1 },
       );
+    }
+  }
+  async cookieUserfind(Token:string) : Promise<string>{
+    try{
+      const verify = await this.jwtService.verify(Token, {secret: 'MYARABOZA1@3$'})
+      return verify;
+  }catch (error) {
+      switch (error.message) {
+        case 'INVALID_TOKEN':
+        case 'TOKEN_IS_ARRAY':
+        case 'NO_USER':
+          throw new HttpException('유저가 없습니다', 400);
+
+        case 'EXPIRED_TOKEN':
+          throw new HttpException('토큰이 만료되었습니다.',401);
+        
+        default:
+          throw new HttpException('서버 오류입니다.',500);
+      }
     }
   }
 }
