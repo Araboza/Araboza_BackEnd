@@ -1,10 +1,11 @@
-import { HttpCode, HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PortfolioDTO, PortfolioUpdateDTO } from 'src/dto/Portfolio.dto';
 import { Portfolio } from 'src/entities/portfolio.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { EditUserDto } from 'src/dto/user.dto';
 @Injectable()
 export class PortfolioService {
   constructor(
@@ -16,7 +17,9 @@ export class PortfolioService {
   ) {}
 
   async getAllPortfolio() {
-    return await this.Portfolio.query('select * from portfolio;');
+    return await this.Portfolio.query(
+      'select * from portfolio order by id desc;',
+    );
   }
 
   async pushData(portfolio: PortfolioDTO, token: string) {
@@ -145,5 +148,12 @@ export class PortfolioService {
       { relations: ['portfolio'] },
     );
     return userData;
+  }
+
+  async userEdit(UserData: EditUserDto, cookie: string) {
+    const token = this.jwtService.decode(cookie);
+    this.user.update(token.sub, {
+      ...UserData,
+    });
   }
 }
