@@ -11,7 +11,12 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
-import { loginDto, registerDto, userEditDto } from 'src/dto/user.dto';
+import {
+  EditUserDto,
+  loginDto,
+  registerDto,
+  userEditDto,
+} from 'src/dto/user.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
@@ -55,8 +60,7 @@ export class UserController {
     );
 
     const jwt = await this.jwtService.sign({ sub });
-
-    res.cookie('access_token', jwt).send(data);
+    res.setHeader('set-cookie', [`access_token=${jwt}; SameSite=None; Secure`]);
   }
 
   @ApiOperation({
@@ -86,5 +90,14 @@ export class UserController {
   async logout(@Res() res: Response) {
     res.clearCookie('access_token');
     res.send('fuck');
+  }
+
+  @Post()
+  async userEdit(UserData: EditUserDto, @Res() res: Response) {
+    const cookie = res.cookie['access_token'];
+    this.userService.userEdit(
+      { introduce: UserData.description, major: UserData.major },
+      cookie,
+    );
   }
 }

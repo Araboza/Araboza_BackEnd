@@ -101,7 +101,6 @@ export class PortfolioController {
   ) {
     const token = req.cookies['access_token'];
     const result = await this.portfolioService.right(token, user, postName);
-    if (!result) throw new NotFoundException();
     return [
       await this.portfolioService.findOnePortfolio(user, postName),
       result ? true : false,
