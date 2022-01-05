@@ -85,6 +85,6 @@ export class UserController {
   @Put('/logout')
   async logout(@Res() res: Response) {
     res.clearCookie('access_token');
-    res.send('fuck');
+    res.send('logout되었습니다');
   }
 }
