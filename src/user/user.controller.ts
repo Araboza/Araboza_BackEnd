@@ -51,16 +51,13 @@ export class UserController {
     description: 'google token을 받아서 token을 반환해 줍니다',
   })
   @Post('/login')
-  async Login(
-    @Body() User: loginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async Login(@Body() User: loginDto) {
     const { portfolio, sub, email, ...data } = await this.userService.login(
       User,
     );
 
     const jwt = await this.jwtService.sign({ sub });
-    res.setHeader('set-cookie', [`access_token=${jwt}; SameSite=None; Secure`]);
+    return { access_token: jwt };
   }
 
   @ApiOperation({
